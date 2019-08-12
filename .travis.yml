@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t baczko/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - ddocker run -e CI=true baczko/docker-react npm run test
+
+after_success:
+  - docker build -t baczko/multi-client ./client
+  - docker build -t baczko/multi-nginx ./nginx 
+  - docker build -t baczko/multi-server ./server
+  - docker build -t baczko/multi-worker ./worker
+# Log into docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# push images to docker hub
+  - docker push baczko/multi-client
+  - docker push baczko/multi-nginx
+  - docker push baczko/multi-server
+  - docker push baczko/multi-worker
