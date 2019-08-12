@@ -6,7 +6,7 @@ before_install:
   - docker build -t baczko/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true baczko/docker-react npm run test
+  - docker run -e CI=true baczko/react-test npm run test
 
 after_success:
   - docker build -t baczko/multi-client ./client
